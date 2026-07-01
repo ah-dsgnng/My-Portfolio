@@ -65,7 +65,7 @@
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;overflow-x:hidden;width:100%;max-width:100%;}
 ::selection{background:var(--royal-blue);color:#fff;}
 
 body{
@@ -73,17 +73,20 @@ body{
   color:var(--text);
   font-family:var(--font-body);
   overflow-x:hidden;
+  width:100%;
+  max-width:100%;
   transition:background .5s var(--ease), color .5s var(--ease);
   cursor:none;
 }
 @media (max-width:900px){ body{cursor:auto;} }
 
-img{max-width:100%;display:block;}
+img{max-width:100%;height:auto;display:block;object-fit:contain;}
 a{color:inherit;text-decoration:none;}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 ul{list-style:none;}
 
-.container{width:min(1280px,92%);margin-inline:auto;}
+.container{width:min(100%,1280px);margin:auto;padding-inline:16px;max-width:100%;}
+section,header,footer,.hero,.hero-bg{max-width:100%;}
 
 /* ---------- Scrollbar ---------- */
 ::-webkit-scrollbar{width:9px;}
@@ -129,6 +132,33 @@ ul{list-style:none;}
 .loader-logo{width:96px;height:96px;border-radius:50%;overflow:hidden;border:1px solid var(--border-glow);background:var(--bg-elev);padding:10px;
   box-shadow:0 0 40px rgba(59,130,246,.5);animation:pulseLogo 1.8s ease-in-out infinite;}
 .loader-logo img{width:100%;height:100%;object-fit:contain;}
+
+/* Generic logo image rule (never crops, always responsive) */
+.logo img,
+.loader-logo img,
+.brand-logo img,
+.hero-orb img,
+.about-img-frame img,
+.footer-brand img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+}
+
+/* Graceful fallback if assets/logo.png fails to load */
+.logo-fallback-text{
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;color:#fff;
+  background:linear-gradient(135deg,var(--royal-blue),var(--cyan));
+  border-radius:inherit;letter-spacing:.02em;
+}
+.loader-logo .logo-fallback-text{width:100%;height:100%;font-size:1.6rem;}
+.brand-logo .logo-fallback-text{width:100%;height:100%;font-size:1rem;}
+.hero-orb .logo-fallback-text{width:62%;height:62%;border-radius:50%;font-size:clamp(1.2rem,4vw,2.2rem);}
+.about-img-frame .logo-fallback-text{width:46%;height:46%;border-radius:50%;font-size:1.4rem;}
+.footer-brand .logo-fallback-text{width:52px;height:52px;font-size:1rem;}
 @keyframes pulseLogo{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
 .loader-bar{width:220px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
 .loader-bar span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--royal-blue),var(--cyan));animation:loadBar 1.6s var(--ease) forwards;}
@@ -325,6 +355,7 @@ section{position:relative;padding:130px 0;}
 /* ============ ABOUT ============ */
 .about-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:center;}
 @media(max-width:900px){.about-grid{grid-template-columns:1fr;}}
+.about-grid--text-only{grid-template-columns:1fr;max-width:760px;margin-inline:auto;}
 .about-img-wrap{position:relative;}
 .about-img-frame{
   border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--border);
@@ -373,42 +404,6 @@ section{position:relative;padding:130px 0;}
 .service-card p{color:var(--text-dim);font-size:.87rem;line-height:1.65;}
 .service-num{position:absolute;top:20px;right:24px;font-family:var(--font-display);font-size:.75rem;color:var(--text-dim);opacity:.5;}
 
-/* ============ PORTFOLIO ============ */
-.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:46px;}
-.filter-btn{
-  padding:10px 20px;border-radius:30px;font-size:.84rem;border:1px solid var(--border);color:var(--text-dim);
-  background:var(--glass);transition:.3s;
-}
-.filter-btn:hover{color:var(--text);}
-.filter-btn.active{background:linear-gradient(135deg,var(--royal-blue),var(--electric-blue));color:#fff;border-color:transparent;box-shadow:0 4px 20px rgba(37,99,235,.4);}
-
-.masonry{column-count:3;column-gap:22px;}
-@media(max-width:1024px){.masonry{column-count:2;}}
-@media(max-width:640px){.masonry{column-count:1;}}
-.project-card{
-  break-inside:avoid;margin-bottom:22px;border-radius:var(--r-lg);overflow:hidden;position:relative;cursor:pointer;
-  transition:transform .45s var(--ease);
-}
-.project-card:hover{transform:translateY(-6px);}
-.project-thumb{
-  position:relative;width:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);
-  overflow:hidden;
-}
-.project-thumb::after{content:attr(data-tag);position:absolute;top:14px;left:14px;padding:6px 14px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
-  background:rgba(11,15,25,.55);backdrop-filter:blur(6px);border-radius:30px;border:1px solid rgba(255,255,255,.15);}
-.project-thumb .ph-icon{opacity:.5;transform:scale(1);transition:transform .6s var(--ease);}
-.project-card:hover .ph-icon{transform:scale(1.12) rotate(4deg);}
-.project-overlay{
-  position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,11,20,.94) 5%,rgba(8,11,20,.2) 60%,transparent);
-  display:flex;flex-direction:column;justify-content:flex-end;padding:22px;opacity:0;transition:opacity .4s var(--ease);
-}
-.project-card:hover .project-overlay{opacity:1;}
-.project-overlay h4{font-family:var(--font-display);font-size:1.1rem;margin-bottom:4px;}
-.project-overlay p{font-size:.8rem;color:var(--text-dim);margin-bottom:14px;}
-.view-proj{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:600;color:var(--cyan);}
-.project-info{padding:18px 20px;}
-.project-info h4{font-family:var(--font-display);font-size:1rem;margin-bottom:3px;}
-.project-info span{font-size:.75rem;color:var(--text-dim);}
 
 /* ============ SKILLS ============ */
 .skills-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
@@ -500,14 +495,15 @@ section{position:relative;padding:130px 0;}
 }
 .social-pill:hover{border-color:var(--border-glow);background:var(--glass);transform:translateY(-2px);}
 
-.contact-form{padding:38px 32px;border-radius:var(--r-xl);}
+.contact-form{padding:38px 32px;border-radius:var(--r-xl);max-width:100%;box-sizing:border-box;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
 @media(max-width:560px){.form-row{grid-template-columns:1fr;}}
-.field{display:flex;flex-direction:column;gap:8px;}
+.field{display:flex;flex-direction:column;gap:8px;min-width:0;width:100%;}
 .field label{font-size:.78rem;color:var(--text-dim);letter-spacing:.03em;}
 .field input,.field textarea{
   background:var(--bg-elev-2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--text);
   font-family:var(--font-body);font-size:.9rem;transition:border-color .3s, box-shadow .3s;
+  width:100%;max-width:100%;box-sizing:border-box;display:block;
 }
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--border-glow);box-shadow:0 0 0 4px rgba(37,99,235,.15);}
 .field textarea{resize:vertical;min-height:120px;}
@@ -543,27 +539,187 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
 }
 .back-top.show{opacity:1;visibility:visible;transform:translateY(0);}
 
-/* ---------- Lightbox ---------- */
-.lightbox{position:fixed;inset:0;background:rgba(5,7,13,.92);backdrop-filter:blur(10px);z-index:9990;
-  display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:.4s;padding:20px;}
-.lightbox.open{opacity:1;visibility:visible;}
-.lightbox-box{max-width:560px;width:100%;padding:40px;border-radius:var(--r-xl);text-align:center;position:relative;}
-.lightbox-close{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
-.lightbox-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(37,99,235,.3),rgba(34,211,238,.2));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--cyan);}
-
 /* utility */
 .reveal-up{animation:fadeUp .9s var(--ease) both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
 .text-center{text-align:center;}
 .mt-60{margin-top:60px;}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}}
+
+/* ============================================================
+   RESPONSIVE / MOBILE FIX LAYER
+   ============================================================ */
+img,svg,video,canvas,iframe{max-width:100%;height:auto;}
+
+.nav-row{gap:10px;}
+.brand{min-width:0;flex-shrink:1;}
+.brand-text,.brand-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nav-actions{flex-shrink:0;}
+
+@media (max-width:980px){
+  .nav-row{flex-wrap:nowrap;}
+  .nav-actions{gap:8px;}
+}
+
+@media (max-width:768px){
+
+  html,body{
+    overflow-x:hidden;
+    width:100%;
+    max-width:100%;
+  }
+
+  .container{
+    width:100%;
+    max-width:100%;
+    padding-inline:16px;
+  }
+
+  section{
+    padding-inline:16px;
+    max-width:100%;
+  }
+
+  .hero-content,
+  .about-grid,
+  .contact-grid,
+  .skills-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:24px;
+    width:100%;
+    max-width:100%;
+  }
+
+  .about-grid > *,
+  .contact-grid > *,
+  .skills-wrap > *{
+    width:100%;
+    max-width:100%;
+  }
+
+  .hero{
+    padding-top:100px;
+    min-height:auto;
+    padding-bottom:60px;
+  }
+
+  .hero h1{
+    font-size:clamp(2.5rem,10vw,4rem);
+    line-height:1.05;
+  }
+
+  .hero-roles{
+    justify-content:center;
+    flex-wrap:wrap;
+    width:100%;
+  }
+
+  .hero-stats{
+    justify-content:center;
+    flex-wrap:wrap;
+    width:100%;
+  }
+
+  .hero p.lead{
+    max-width:100%;
+    margin-inline:auto;
+  }
+
+  .hero-ctas{
+    width:100%;
+    justify-content:center;
+  }
+
+  .hero-visual{
+    width:100%;
+    max-width:100%;
+  }
+
+  .sec-sub{
+    max-width:100%;
+  }
+
+  .sec-head.center .sec-sub{
+    margin-inline:auto;
+  }
+
+  .about-text{
+    width:100%;
+    max-width:100%;
+    text-align:center;
+  }
+
+  .about-points{
+    text-align:left;
+  }
+
+  .about-img-wrap{
+    width:100%;
+    max-width:340px;
+    margin-inline:auto;
+  }
+
+  .about-badge-card{
+    right:0;
+    bottom:-18px;
+  }
+
+  .footer-grid{
+    text-align:center;
+  }
+  .footer-brand{
+    justify-content:center;
+  }
+  .about-points,
+  .footer-col ul{
+    text-align:left;
+  }
+
+  .brand-text{
+    font-size:1rem;
+  }
+
+  .brand-logo{
+    width:48px;
+    height:48px;
+  }
+
+  .brand-sub{
+    max-width:120px;
+  }
+
+  .nav-row{
+    padding-inline:0;
+  }
+
+  .why-grid,
+  .services-grid,
+  .circular-skills{
+    width:100%;
+    max-width:100%;
+  }
+
+  * {
+    max-width:100%;
+  }
+}
+
+@media (max-width:480px){
+  .hero-badge{font-size:.7rem;padding:7px 14px;}
+  .hero-ctas{flex-direction:column;width:100%;}
+  .hero-ctas .btn{width:100%;justify-content:center;}
+  .btn-whatsapp{width:100%;justify-content:center;}
+}
 </style>
 </head>
 <body data-theme="dark">
 
 <!-- Loader -->
 <div id="loader">
-  <div class="loader-logo"><img src="assets/logo.png" alt="AH DSGNNG"></div>
+  <div class="loader-logo"><img class="logo" src="assets/logo.png" alt="AH DSGNNG" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback-text',textContent:'AH'}));"></div>
   <div class="loader-bar"><span></span></div>
   <div class="loader-text">AH DSGNNG — Loading</div>
 </div>
@@ -578,7 +734,7 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
 <header id="siteHeader">
   <div class="container nav-row">
     <a href="#home" class="brand">
-      <div class="brand-logo"><img src="assets/logo.png" alt="AH DSGNNG Logo"></div>
+      <div class="brand-logo"><img class="logo" src="assets/logo.png" alt="AH DSGNNG Logo" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback-text',textContent:'AH'}));"></div>
       <div>
         <div class="brand-text">AH <span>DSGNNG</span></div>
         <div class="brand-sub">Graphic Designer</div>
@@ -589,7 +745,6 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
       <a href="#home" class="active">Home</a>
       <a href="#about">About</a>
       <a href="#services">Services</a>
-      <a href="#portfolio">Portfolio</a>
       <a href="#skills">Skills</a>
       <a href="#experience">Experience</a>
       <a href="#reviews">Reviews</a>
@@ -631,7 +786,6 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
       <div class="hero-ctas">
         <a href="#contact" class="btn btn-primary"><span>Hire Me
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-        <a href="#portfolio" class="btn btn-ghost">View Portfolio</a>
         <a href="https://wa.me/917054307887" target="_blank" rel="noopener" class="btn btn-whatsapp">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.64-1.03-5.13-2.9-7C17.18 3.03 14.68 2 12.04 2z"/></svg>
           WhatsApp Me
@@ -646,7 +800,7 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
     <div class="hero-visual">
       <div class="hero-orb-ring"></div>
       <div class="hero-orb-ring r2"></div>
-      <div class="hero-orb"><img src="assets/logo.png" alt="AH DSGNNG"></div>
+      <div class="hero-orb"><img class="logo" src="assets/logo.png" alt="AH DSGNNG" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback-text',textContent:'AH'}));"></div>
     </div>
   </div>
 
@@ -656,21 +810,7 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
 <!-- ABOUT -->
 <section id="about">
   <div class="container">
-    <div class="about-grid">
-      <div data-reveal="left">
-        <div class="about-img-wrap">
-          <div class="about-img-frame">
-            <div class="ring"></div>
-            <div class="ring r2"></div>
-            <img src="assets/logo.png" alt="MD Amir Hamja">
-          </div>
-          <div class="about-badge-card glass glow-border">
-            <b>100%</b>
-            <small>Creative<br>Craft</small>
-          </div>
-        </div>
-      </div>
-
+    <div class="about-grid about-grid--text-only">
       <div class="about-text" data-reveal>
         <div class="eyebrow">About Me</div>
         <h2 class="sec-title">Designing flavor into<br><span class="gradient-text">visual identity.</span></h2>
@@ -751,32 +891,6 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
         <p>Fully digital, mobile-first menu websites — no app, no printing, no hassle.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- PORTFOLIO -->
-<section id="portfolio">
-  <div class="container">
-    <div class="sec-head center" data-reveal>
-      <div class="eyebrow" style="justify-content:center">Selected Work</div>
-      <h2 class="sec-title">A taste of the<br><span class="gradient-text">portfolio.</span></h2>
-      <p class="sec-sub">A curated collection of restaurant branding, menus, posters &amp; food advertisement design.</p>
-    </div>
-
-    <div class="filters" data-reveal>
-      <button class="filter-btn active" data-filter="all">All Work</button>
-      <button class="filter-btn" data-filter="posters">Restaurant Posters</button>
-      <button class="filter-btn" data-filter="menus">Restaurant Menus</button>
-      <button class="filter-btn" data-filter="ads">Food Ads</button>
-      <button class="filter-btn" data-filter="logos">Logos</button>
-      <button class="filter-btn" data-filter="flyers">Flyers</button>
-      <button class="filter-btn" data-filter="social">Social Posts</button>
-      <button class="filter-btn" data-filter="packaging">Packaging</button>
-      <button class="filter-btn" data-filter="cards">Business Cards</button>
-      <button class="filter-btn" data-filter="web">Website UI</button>
-    </div>
-
-    <div class="masonry" id="masonryGrid"></div>
   </div>
 </section>
 
@@ -1035,7 +1149,7 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
     <div class="footer-grid">
       <div>
         <div class="footer-brand">
-          <img src="assets/logo.png" alt="AH DSGNNG">
+          <img class="logo" src="assets/logo.png" alt="AH DSGNNG" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback-text',textContent:'AH'}));">
           <div>
             <div class="brand-text">AH <span style="color:var(--electric-blue)">DSGNNG</span></div>
           </div>
@@ -1046,7 +1160,6 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
         <h5>Quick Links</h5>
         <ul>
           <li><a href="#about">About</a></li>
-          <li><a href="#portfolio">Portfolio</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#reviews">Reviews</a></li>
         </ul>
@@ -1084,17 +1197,6 @@ footer{padding:70px 0 30px;border-top:1px solid var(--border);position:relative;
 <button class="back-top" id="backTop" aria-label="Back to top">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-  <div class="lightbox-box glass glow-border">
-    <button class="lightbox-close" id="lightboxClose">✕</button>
-    <div class="lightbox-icon" id="lbIcon"></div>
-    <h3 id="lbTitle" style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:8px;"></h3>
-    <p id="lbDesc" style="color:var(--text-dim);font-size:.9rem;margin-bottom:22px;"></p>
-    <a href="#contact" class="btn btn-primary" id="lbCta" style="justify-content:center;"><span>Discuss a Similar Project</span></a>
-  </div>
-</div>
 
 <script>
 (function(){
@@ -1214,77 +1316,6 @@ const circIO=new IntersectionObserver((entries)=>{
   });
 },{threshold:0.4});
 circles.forEach(c=>circIO.observe(c));
-
-/* ---------- Portfolio data + masonry ---------- */
-const heights=[260,330,300,360,280,320,300,340,270,310,290,350];
-const projects=[
-  {cat:'posters',tag:'Poster',title:'Spice Junction — Weekend Offer',desc:'Bold festive poster for a weekend thali offer.',icon:'poster'},
-  {cat:'menus',tag:'Menu',title:'Cafe Bloom — Full Menu Card',desc:'Elegant trifold menu with category iconography.',icon:'menu'},
-  {cat:'ads',tag:'Food Ad',title:'Grill House — Combo Ad Creative',desc:'High-conversion ad creative for a combo meal launch.',icon:'ad'},
-  {cat:'logos',tag:'Logo',title:'Urban Bites — Brand Mark',desc:'Modern monoline logo for a fast-casual eatery.',icon:'logo'},
-  {cat:'flyers',tag:'Flyer',title:'Tandoor Nights — Grand Opening',desc:'Compact promo flyer for a restaurant launch event.',icon:'flyer'},
-  {cat:'social',tag:'Social Post',title:'Daily Special — IG Carousel',desc:'3-slide carousel template for daily specials.',icon:'social'},
-  {cat:'packaging',tag:'Packaging',title:'Sweet Treats — Box Design',desc:'Dessert packaging with a premium unboxing feel.',icon:'package'},
-  {cat:'cards',tag:'Business Card',title:'Chef Aman — Personal Card',desc:'Minimal matte-black business card design.',icon:'card'},
-  {cat:'web',tag:'Website UI',title:'QR Menu — Mobile Web UI',desc:'Scan-and-order digital menu website interface.',icon:'web'},
-  {cat:'menus',tag:'Menu',title:'The Grill House — Drinks Menu',desc:'Dark themed beverages menu with bold typography.',icon:'menu'},
-  {cat:'posters',tag:'Poster',title:'Biryani Fest — Promo Poster',desc:'High-energy poster promoting a biryani festival.',icon:'poster'},
-  {cat:'social',tag:'Social Post',title:'Behind The Counter — Reel Cover',desc:'Cinematic reel cover for restaurant storytelling.',icon:'social'}
-];
-const icons={
-  poster:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>',
-  menu:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V5a2 2 0 0 1 2-2h8.5L20 7.5V19a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v5h5"/></svg>',
-  ad:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l18-7v16l-18-7z"/><path d="M11 16v3a2 2 0 0 0 4 0v-1"/></svg>',
-  logo:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 2 2.9 6.3 6.9.9-5 4.8 1.3 6.8L12 17.6 5.9 20.8l1.3-6.8-5-4.8 6.9-.9z"/></svg>',
-  flyer:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 3h12l4 4v14H4z"/><path d="M16 3v4h4"/></svg>',
-  social:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>',
-  package:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 8v8l-9 5-9-5V8l9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
-  card:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h4M6 14h2"/></svg>',
-  web:'<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20M7 6h.01"/></svg>'
-};
-const masonry=document.getElementById('masonryGrid');
-function renderProjects(filter){
-  masonry.innerHTML='';
-  projects.filter(p=>filter==='all'||p.cat===filter).forEach((p,i)=>{
-    const h=heights[i%heights.length];
-    const card=document.createElement('div');
-    card.className='project-card glass glow-border';
-    card.dataset.title=p.title; card.dataset.desc=p.desc; card.dataset.icon=p.icon; card.dataset.tag=p.tag;
-    card.innerHTML=`
-      <div class="project-thumb" data-tag="${p.tag}" style="height:${h}px;background:linear-gradient(150deg, hsl(${215+i*4} 70% 14%), hsl(${198+i*6} 80% 10%));">
-        <div class="ph-icon" style="color:rgba(59,130,246,.7)">${icons[p.icon]}</div>
-        <div class="project-overlay">
-          <h4>${p.title}</h4><p>${p.desc}</p>
-          <span class="view-proj">View Project <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        </div>
-      </div>
-      <div class="project-info"><h4>${p.title}</h4><span>${p.tag}</span></div>`;
-    masonry.appendChild(card);
-  });
-  document.querySelectorAll('.project-card').forEach(c=>{
-    c.addEventListener('click',()=>openLightbox(c.dataset.title,c.dataset.desc,c.dataset.icon));
-  });
-}
-renderProjects('all');
-
-document.querySelectorAll('.filter-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    renderProjects(btn.dataset.filter);
-  });
-});
-
-/* ---------- Lightbox ---------- */
-const lightbox=document.getElementById('lightbox');
-function openLightbox(title,desc,icon){
-  document.getElementById('lbTitle').textContent=title;
-  document.getElementById('lbDesc').textContent=desc;
-  document.getElementById('lbIcon').innerHTML=icons[icon]||'';
-  lightbox.classList.add('open');
-}
-document.getElementById('lightboxClose').addEventListener('click',()=>lightbox.classList.remove('open'));
-lightbox.addEventListener('click',e=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
 
 /* ---------- Reviews slider ---------- */
 const track=document.getElementById('reviewTrack');
